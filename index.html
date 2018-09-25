@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>软件工程作业2</title>
+    <link rel="stylesheet"  href="css/index.css"/>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/file.js"></script>
+</head>
+<body>
+    <h1>自动生成四则运算</h1>
+
+    <div>
+        <label for="problemNum">题目数</label>
+        <input type="text" id="problemNum" class="inputItem" placeholder="题目数" /> 
+    </div>
+    <div>
+        <label for="round">数字范围</label>
+        <input type="text" id="round" class="inputItem" placeholder="数字范围" /> 
+    </div>
+    
+    
+    <button type='button' onclick="start()">开始程序</button>
+
+    <!-- <button onClick="check()">check</button>
+    <button onClick="checkRight()">checkRight</button> -->
+
+    
+    <button onClick="downFile('quesitons.txt', quesitonsArr)">导出题目txt文件</button>
+    <button onClick="downFile('result.txt', answersArr)">导出答案txt文件</button>
+
+    <div style="width: 500px;height: 50px;"></div>
+
+    <div class="box-container">
+        <div class="l-box">
+            <ul id="text"></ul>
+        </div>
+        <div class="r-box">
+            <ul id="text2"></ul>
+        </div>
+    </div>
+
+    <div style="width: 500px;height: 50px;"></div>
+
+    <input id='file' type="file" onchange="upload(this)"/>
+    
+    <div style="width: 1000px;height: 200px;border: 1px solid #000;">
+            <textarea id="test" style="width: 1000px;height: 200px;border: 1px solid #000;"></textarea>
+    </div>
+    
+
+</body>
+<script>
+
+    // 全局属性
+    MAX_NUM = 20;
+
+    window.onload = function()
+    {
+        document.getElementById("problemNum").value = "10";
+        document.getElementById("round").value = "10";
+        console.log(MAX_NUM);
+    }
+
+    function start() {
+        var problemNum = document.getElementById("problemNum").value;
+        var round = document.getElementById("round").value;
+        
+        if (problemNum <= 0 || round <= 0) {
+            alert('请输入正确的题目数及范围！！');
+            return;
+        }
+
+        MAX_NUM = Number(round);
+
+        var quesitons;
+        var answers;
+
+        quesitonsArr = [];
+        answersArr = [];
+
+        var quesitonsHtmlArr = "";
+        var answersHtmlArr = "";
+
+        // 用来存没化简的答案，并且根据正负来改变决定循环走向
+        var flag;
+
+        for (i = 1; i <= problemNum; i++) {
+            
+            quesitons = createProblem();
+            answers = simpleFenshu(evalRpn(dal2Rpn(quesitons)));
+
+            flag = evalRpn(dal2Rpn(quesitons)).toString();
+
+            if(flag.indexOf('-') != -1) {
+                i--;
+            } else {
+                quesitonsArr.push(quesitons.toString());
+                answersArr.push(answers.toString());
+                quesitonsHtmlArr += ('<li>' + '第' + i + '题题目： ' + quesitons.toString() + ' = ' + '</li>' + '<br>');
+                answersHtmlArr += ('<li>' + '第' + i + '题答案： ' + answers.toString() + '</li>' + '<br>');
+            }
+        }
+
+        console.log(quesitonsArr);
+        console.log(answersArr);
+        
+        document.getElementById("text").innerHTML=quesitonsHtmlArr;
+        document.getElementById("text2").innerHTML=answersHtmlArr;
+    }
+
+
+    // 生成下载文件
+    function downFile(name, content) {
+        // 先做必要判断
+        content = content.toString();
+        console.log(content);
+        if (name == 'quesitons.txt') {
+            var str = content.split(',').join(' = \r\n');
+        } else {
+            var str = content.split(',').join('\r\n');
+        }
+        download(name, str);
+    }
+    
+    // 查对错
+    function check() {
+        var classes = document.getElementsByClassName("answer");
+        results = [];
+        for(var i = 0;i<classes.length;i++) {
+            results[i+1] = classes[i].value;
+        }
+        console.log(results)
+        console.log(answer)
+    }
+
+    function checkRight() {
+        var right = "正确题目编号：";
+        var fault = "错误题目编号：";
+        for(var i = 1;i<results.length;i++) {
+            if(results[i] == answer[i]) {
+                right+= i + ",";
+            } else {
+                fault+= i + ",";
+            }
+        }
+        console.log(right)
+        console.log(fault)
+    }
+    
+</script>
+</html>

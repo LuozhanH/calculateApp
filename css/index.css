@@ -1,0 +1,23 @@
+.box-container {
+    display: flex;
+}
+
+.l-box {
+    flex: 1;
+    padding: 30px;
+    border: 1px solid #000;
+}
+
+.l-box input{
+    width: 50px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #777;
+    padding-left: 15px;
+}
+
+.r-box {
+    flex: 1;
+    padding: 30px;
+    border: 1px solid #000;
+}
