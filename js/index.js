@@ -29,11 +29,12 @@ function getMaxFactor(x, y) {
 
 // 分数化简 （a为分子，b为分母，mf为最大公约数）
 function fenShu (a,b,mf) {
+    if(a == 0 || b == 0) return 0;
     if(mf==1) {
         // 不需要化简分式
         if(a>b && b!=1) {
             // 分子比较大，则转化为真分式
-            return parseInt(a/b) + '’' + a%b + '/' + b;
+            return parseInt(a/b) + "`" + a%b + '/' + b;
         } else if(a<b) {
             // 分子小则保留输出
             return a + '/' + b;

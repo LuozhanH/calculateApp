@@ -12,50 +12,81 @@
 <body>
     <h1>自动生成四则运算</h1>
 
-    <div>
-        <label for="problemNum">题目数</label>
+    <h2>在线操作板块</h2>
+
+    <div class="input-box">
+        <label for="problemNum">题目数：</label>
         <input type="text" id="problemNum" class="inputItem" placeholder="题目数" /> 
     </div>
-    <div>
-        <label for="round">数字范围</label>
+    <div class="input-box">
+        <label for="round">数字范围：</label>
         <input type="text" id="round" class="inputItem" placeholder="数字范围" /> 
     </div>
     
     
     <button type='button' onclick="start()">开始程序</button>
-
-    <!-- <button onClick="check()">check</button>
-    <button onClick="checkRight()">checkRight</button> -->
-
     
     <button onClick="downFile('quesitons.txt', quesitonsArr)">导出题目txt文件</button>
     <button onClick="downFile('result.txt', answersArr)">导出答案txt文件</button>
 
-    <div style="width: 500px;height: 50px;"></div>
+    <button onClick="checkRight()">在线验证答案</button>
 
     <div class="box-container">
         <div class="l-box">
+            <h4>题目：</h4>
             <ul id="text"></ul>
         </div>
         <div class="r-box">
+            <h4>答案：</h4>
             <ul id="text2"></ul>
+            <div class="r-box-map" id="r-box-map">
+                <div class="r-box-map-text">提交做题后，会给出答案。</div>
+            </div>
         </div>
+    </div>
+
+    <div class="a-box">
+        <h3>在线验证结果：</h3>
+        <div><span id="rights"></span></div>
+        <div><span id="faults"></span></div>
     </div>
 
     <div style="width: 500px;height: 50px;"></div>
 
-    <input id='file' type="file" onchange="upload(this)"/>
+    <h2>文件操作板块</h2>
+
     
-    <div style="width: 1000px;height: 200px;border: 1px solid #000;">
-            <textarea id="test" style="width: 1000px;height: 200px;border: 1px solid #000;"></textarea>
+    
+    <div class="fileBox">
+        <div class="fileBoxItem">
+            <h4 style="margin: 5px 0;">请选择你的题目文件</h5>
+            <input id='file' type="file" onchange="upload(this, 1)"/>
+            <div class="filecontent" id="fileQ"></div>
+        </div>
+        <div class="fileBoxItem">
+            <h4 style="margin: 5px 0;">请选择你要核对的已完成题目文件</h5>
+            <input id='file' type="file" onchange="upload(this)"/>
+            <div class="filecontent" id="fileA"></div>
+        </div>
+    </div>
+
+    <button style="margin-top: 20px;" onClick="checkRightFile()">在线验证答案</button>
+
+    <div class="a-box">
+        <h3>在线验证结果：</h3>
+        <div><span id="rights2"></span></div>
+        <div><span id="faults2"></span></div>
     </div>
     
 
 </body>
 <script>
-
     // 全局属性
     MAX_NUM = 20;
+
+    FileAnswerArr = [];
+    FileQuestionArr = [];
+
 
     window.onload = function()
     {
@@ -65,6 +96,12 @@
     }
 
     function start() {
+
+        // 一些初始化的dom操作
+        document.getElementById("r-box-map").style.display = "block";
+        document.getElementById("rights").innerHTML = "";
+        document.getElementById("faults").innerHTML = "";
+
         var problemNum = document.getElementById("problemNum").value;
         var round = document.getElementById("round").value;
         
@@ -99,7 +136,7 @@
             } else {
                 quesitonsArr.push(quesitons.toString());
                 answersArr.push(answers.toString());
-                quesitonsHtmlArr += ('<li>' + '第' + i + '题题目： ' + quesitons.toString() + ' = ' + '</li>' + '<br>');
+                quesitonsHtmlArr += ('<li>' + '第' + i + '题题目： ' + quesitons.toString() + ' = ' + "<input class='answer' type='text'/>"  + '</li>' + '<br>');
                 answersHtmlArr += ('<li>' + '第' + i + '题答案： ' + answers.toString() + '</li>' + '<br>');
             }
         }
@@ -114,11 +151,14 @@
 
     // 生成下载文件
     function downFile(name, content) {
+        document.getElementById("rights2").innerHTML = "";
+        document.getElementById("faults2").innerHTML = "";
         // 先做必要判断
         content = content.toString();
         console.log(content);
         if (name == 'quesitons.txt') {
             var str = content.split(',').join(' = \r\n');
+            str = str + " = "
         } else {
             var str = content.split(',').join('\r\n');
         }
@@ -130,24 +170,49 @@
         var classes = document.getElementsByClassName("answer");
         results = [];
         for(var i = 0;i<classes.length;i++) {
-            results[i+1] = classes[i].value;
+            results[i] = classes[i].value;
         }
         console.log(results)
-        console.log(answer)
+        console.log(answersArr)
     }
 
     function checkRight() {
+        check();
         var right = "正确题目编号：";
         var fault = "错误题目编号：";
-        for(var i = 1;i<results.length;i++) {
-            if(results[i] == answer[i]) {
-                right+= i + ",";
+        for(var i = 0;i<results.length;i++) {
+            if(results[i] == answersArr[i]) {
+                right+= i+1 + ",";
             } else {
-                fault+= i + ",";
+                fault+= i+1 + ",";
             }
         }
-        console.log(right)
-        console.log(fault)
+        console.log(right);
+        console.log(fault);
+        document.getElementById("rights").innerHTML = right;
+        document.getElementById("faults").innerHTML = fault;
+
+        document.getElementById("r-box-map").style.display = "none";
+    }
+
+    function checkRightFile () {
+        if(FileAnswerArr.length == 0 || FileQuestionArr.length == 0) {
+            alert('请先选择文件。')
+        } else {
+            var right2 = "正确题目编号：";
+            var fault2 = "错误题目编号：";
+            for(var i = 0;i<FileAnswerArr.length;i++) {
+                var ans = FileQuestionArr[i].split('=');
+
+                if (ans[1].trim() == FileAnswerArr[i].trim()) {
+                    right2+= i+1 + ",";
+                } else {
+                    fault2+= i+1 + ",";
+                }
+            }
+            document.getElementById("rights2").innerHTML = right2;
+            document.getElementById("faults2").innerHTML = fault2;
+        }
     }
     
 </script>

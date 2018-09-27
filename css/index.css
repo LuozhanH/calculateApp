@@ -1,11 +1,13 @@
 .box-container {
     display: flex;
+    margin-top: 50px;
 }
 
 .l-box {
     flex: 1;
     padding: 30px;
     border: 1px solid #000;
+    margin-right: 15px;
 }
 
 .l-box input{
@@ -20,4 +22,81 @@
     flex: 1;
     padding: 30px;
     border: 1px solid #000;
+    margin-left: 15px;
+    position: relative;
+}
+
+.r-box-map {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #666;
+}
+
+.r-box-map-text {
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 40px;
+    font-size: 20px;
+    color: #fff;
+}
+
+.a-box div {
+    padding: 20px;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+.input-box {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.input-box label{
+    margin-right: 10px;
+}
+
+.fileBox {
+    display: flex;
+}
+
+.fileBoxItem {
+    flex: 1;
+}
+
+.filecontent {
+    border:1px solid #555;
+    padding: 20px;
+    line-height: 2.8888;
+}
+
+.fileBoxItem:first-child {
+    margin-right: 15px;
+}
+
+.fileBoxItem:last-child {
+    margin-left: 15px;
+}
+
+/* 标签 */
+button {
+    padding: 10px;
+    border-radius: 5px;
+    background: #555;
+    color: #fff;
+    outline: none;
+    margin-right: 8px;
+}
+
+html {
+    padding: 50px;
+}
+
+h1 {
+    text-align: center;
+    padding: 10px 20px;
+    border: 1px solid #777;
 }

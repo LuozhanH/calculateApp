@@ -1,7 +1,7 @@
 
 // 读取本地文件的内容 兼容多种浏览器
 
-function upload(input) {
+function upload(input, flag) {
     //支持chrome IE10
     if (window.FileReader) {
         var file = input.files[0];
@@ -10,7 +10,17 @@ function upload(input) {
         reader.onload = function() {
             console.log(this.result)
             // alert(this.result);
-            document.getElementById("test").value = this.result;
+
+            if(flag == '1') {
+                var str = this.result.split('\r\n').join('<br>');
+                FileQuestionArr = this.result.split('\r\n');
+                document.getElementById("fileQ").innerHTML = str;
+            } else {
+                var str = this.result.split('\r\n').join('<br>');
+                FileAnswerArr = this.result.split('\r\n');
+                document.getElementById("fileA").innerHTML = str;
+            }
+            
         }
         reader.readAsText(file);
     } 
